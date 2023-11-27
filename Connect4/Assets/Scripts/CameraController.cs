@@ -7,20 +7,8 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float camOrbitSpeed;
 
-    private void FixedUpdate()
-    {
-        OrbitBoard();
-    }
-
-    void OrbitBoard()
-    {
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(new Vector3(0, camOrbitSpeed, 0));
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(new Vector3(0, -camOrbitSpeed, 0));
-        }
+    public void OrbitBoard(int dir)
+    { 
+        transform.Rotate(new Vector3(0, camOrbitSpeed * dir * Time.deltaTime, 0));
     }
 }

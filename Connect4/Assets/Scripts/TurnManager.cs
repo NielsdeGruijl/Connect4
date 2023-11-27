@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
     [SerializeField] private float turnDuration;
-    [HideInInspector] public bool player1Turn = true;
-    [HideInInspector] public bool player2Turn = false;
+
+    public const int player1 = 0;
+    public const int player2 = 1;
+    [Range(player1, player2)] private int playerID;
+    public int getPlayerID { get { return playerID; } }
 
     private void Start()
     {
+        playerID = player1;
         StartCoroutine(TurnTimerCo());
     }
 
@@ -21,9 +26,11 @@ public class TurnManager : MonoBehaviour
 
     public void ChangeTurns()
     {
-        player2Turn = player1Turn;
-        player1Turn = !player2Turn;
-        //Debug.Log("Changed Turns!");
+        if(playerID == player1)
+            playerID = player2;
+        else
+            playerID = player1;
+
         StopAllCoroutines();
         StartCoroutine(TurnTimerCo());
     }

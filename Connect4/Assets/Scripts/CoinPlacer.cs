@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CoinPlacer : MonoBehaviour
 {
+    [Header("Game Board")]
     [SerializeField] private GameObject coin1, coin2;
-    [SerializeField] private LayerMask layerMask;
     [SerializeField] private GridScript grid;
-    [SerializeField] private GameObject p1WinText, p2WinText;
+
+    [Header("Player Components")]
+    [SerializeField] private LayerMask layerMask;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text winText;
+
+    //External components
     private Camera cam;
     private TurnManager turnManager;
-
-    private bool player1Wins = false;
-    private bool player2Wins = false;
 
     private void Start()
     {
@@ -21,15 +26,7 @@ public class CoinPlacer : MonoBehaviour
         cam = Camera.main;
     }
 
-    private void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            SelectPosition();
-        }
-    }
-
-    private void SelectPosition()
+    public void SelectPosition()
     {
         RaycastHit hit;
         if (Physics.Raycast(cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)), out hit, 100, layerMask))
@@ -40,18 +37,15 @@ public class CoinPlacer : MonoBehaviour
                 //if column is full, return
                 if (availableNode == null) return;
 
-                if (turnManager.player1Turn)
-                {
+                if (turnManager.getPlayerID == TurnManager.player1)
                     Instantiate(coin1, availableNode.transform.position, coin1.transform.rotation);
-                    availableNode.player1 = true;
-                    CheckConnectFour(availableNode, 0);
-                }
-                else if(turnManager.player2Turn)
-                {
+                else
                     Instantiate(coin2, availableNode.transform.position, coin2.transform.rotation);
-                    availableNode.player2 = true;
-                    CheckConnectFour(availableNode, 1);
-                }
+
+                availableNode.occupied = true;
+                availableNode.ownerID = turnManager.getPlayerID;
+                CheckConnectFour(availableNode, turnManager.getPlayerID);
+
                 turnManager.ChangeTurns();
             }
         }
@@ -63,21 +57,12 @@ public class CoinPlacer : MonoBehaviour
 
     private void CheckConnectFour(Node node, int playerID)
     {
+        //Check for 4 connected coins along each possible axis (ConnectFour checks both the given and opposite direction)
         if (grid.ConnectFour(node, Node.direction.topLeft, playerID) || grid.ConnectFour(node, Node.direction.top, playerID) ||
            grid.ConnectFour(node, Node.direction.topRight, playerID) || grid.ConnectFour(node, Node.direction.right, playerID))
         {
-            if (playerID == 0)
-            {
-                player1Wins = true;
-                p1WinText.SetActive(true);
-                //Debug.Log("PLAYER 1 WINS");
-            }
-            if (playerID == 1)
-            {
-                player2Wins = true;
-                p2WinText.SetActive(true);
-                //Debug.Log("PLAYER 2 WINS");
-            }
+            winText.gameObject.SetActive(true);
+            winText.text = $"PLAYER {playerID + 1} WINS!";
         }
         else
             Debug.Log("No connect 4 found");            

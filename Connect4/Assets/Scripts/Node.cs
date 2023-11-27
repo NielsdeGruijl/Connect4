@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    //all possible directions for neighbours
     public enum direction
     { 
         topLeft,
@@ -18,15 +19,15 @@ public class Node : MonoBehaviour
 
     private Vector2 pos;
     public Vector2 getPosition { get { return pos; } }
+
     private int id;
     public int getID { get { return id; } }
 
     public List<Node> neighbours = new List<Node>();
-
-    public bool player1 = false;
-    public bool player2 = false;
-
     private Dictionary<direction, Node> directionalNeighbours = new Dictionary<direction, Node>();
+
+    public bool occupied;
+    public int ownerID;
 
     public void Initialize(int id, Vector2 pos)
     {
@@ -36,6 +37,7 @@ public class Node : MonoBehaviour
 
     public void Sortneighbours()
     {
+        //add each neighbour with the correct direction as key to the dictionary for easier access later on
         foreach (Node node in neighbours)
         {
             //check if the neighbour is above (topLeft, top, topRight)
@@ -77,11 +79,8 @@ public class Node : MonoBehaviour
     {
         if (!directionalNeighbours.ContainsKey(dir)) return null;
         
-        if (directionalNeighbours[dir].player1 && playerID == 0)
-        {
-            return directionalNeighbours[dir];
-        }
-        if (directionalNeighbours[dir].player2 && playerID == 1)
+        //if the neighbour contains a coin belonging to the correct player, return the neighbour
+        if (directionalNeighbours[dir].ownerID == playerID && directionalNeighbours[dir].occupied)
         {
             return directionalNeighbours[dir];
         }

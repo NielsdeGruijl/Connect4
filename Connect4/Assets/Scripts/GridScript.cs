@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GridScript : MonoBehaviour
 {
+    [Header("Grid Content")]
     [SerializeField] private GameObject node;
     private List<Node> nodes = new List<Node>();
 
@@ -46,14 +47,15 @@ public class GridScript : MonoBehaviour
                 Node nodeScript = nodeObject.GetComponent<Node>();
                 nodeScript.Initialize(nodeID, cellPos);
                 nodes.Add(nodeScript);
-                AssignNeighbours(nodeScript);
+                
                 nodeID++;
             }
         }
 
-        //once the grid has been built, sort the neighbours based on direction in each node 
+        //once the grid has been built, assign sort the neighbours based on direction for each node 
         foreach (Node node in nodes)
         {
+            AssignNeighbours(node);
             node.Sortneighbours();
         }
     }
@@ -68,11 +70,10 @@ public class GridScript : MonoBehaviour
             //calculate distance to any diagonal neighbour plus a 0.1f margin
             float diagonalDistance = Mathf.Sqrt(Mathf.Pow(cellSize.x, 2) + Mathf.Pow(cellSize.y, 2)) + 0.1f;
 
-            //add neighbours to list and current node to the neighbours' list
+            //find and store all neighbours
             if ((nodes[i].getPosition - currentNode.getPosition).magnitude < diagonalDistance)
             {
                 currentNode.neighbours.Add(nodes[i]);
-                nodes[i].neighbours.Add(currentNode);
             }
         }
     }
@@ -93,8 +94,8 @@ public class GridScript : MonoBehaviour
         {
             //move up a row, nodeID determines the column and i * rowLength determines the row
             lowestNodeID = nodeID + (i * rowLength);
-            //if the node is occupied, continue, otherwise return available node
-            if (nodes[lowestNodeID].player1 || nodes[lowestNodeID].player2)
+            
+            if (nodes[lowestNodeID].occupied)
                 continue;
             else
                 return nodes[lowestNodeID];
@@ -124,7 +125,7 @@ public class GridScript : MonoBehaviour
             //if we haven't checked the opposite direction yet
             else if (!otherDirChecked)
             {
-                //reset tempNode to check the opposite direction
+                //reset tempNode
                 tempNode = node;
 
                 //get the opposite direction
