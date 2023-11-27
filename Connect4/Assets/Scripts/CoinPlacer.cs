@@ -7,8 +7,12 @@ public class CoinPlacer : MonoBehaviour
     [SerializeField] private GameObject coin1, coin2;
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private GridScript grid;
+    [SerializeField] private GameObject p1WinText, p2WinText;
     private Camera cam;
     private TurnManager turnManager;
+
+    private bool player1Wins = false;
+    private bool player2Wins = false;
 
     private void Start()
     {
@@ -40,11 +44,13 @@ public class CoinPlacer : MonoBehaviour
                 {
                     Instantiate(coin1, availableNode.transform.position, coin1.transform.rotation);
                     availableNode.player1 = true;
+                    CheckConnectFour(availableNode, 0);
                 }
                 else if(turnManager.player2Turn)
                 {
                     Instantiate(coin2, availableNode.transform.position, coin2.transform.rotation);
                     availableNode.player2 = true;
+                    CheckConnectFour(availableNode, 1);
                 }
                 turnManager.ChangeTurns();
             }
@@ -53,5 +59,27 @@ public class CoinPlacer : MonoBehaviour
         {
             Debug.Log("Nothing was hit");
         }
+    }
+
+    private void CheckConnectFour(Node node, int playerID)
+    {
+        if (grid.ConnectFour(node, Node.direction.topLeft, playerID) || grid.ConnectFour(node, Node.direction.top, playerID) ||
+           grid.ConnectFour(node, Node.direction.topRight, playerID) || grid.ConnectFour(node, Node.direction.right, playerID))
+        {
+            if (playerID == 0)
+            {
+                player1Wins = true;
+                p1WinText.SetActive(true);
+                //Debug.Log("PLAYER 1 WINS");
+            }
+            if (playerID == 1)
+            {
+                player2Wins = true;
+                p2WinText.SetActive(true);
+                //Debug.Log("PLAYER 2 WINS");
+            }
+        }
+        else
+            Debug.Log("No connect 4 found");            
     }
 }

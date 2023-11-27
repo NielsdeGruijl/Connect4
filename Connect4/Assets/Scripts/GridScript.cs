@@ -42,12 +42,19 @@ public class GridScript : MonoBehaviour
                 GameObject nodeObject = Instantiate(node, cellPos, Quaternion.identity);
                 nodeObject.transform.parent = transform;
                 nodeObject.transform.name = $"Node {nodeID}";
+
                 Node nodeScript = nodeObject.GetComponent<Node>();
                 nodeScript.Initialize(nodeID, cellPos);
                 nodes.Add(nodeScript);
                 AssignNeighbours(nodeScript);
                 nodeID++;
             }
+        }
+
+        //once the grid has been built, sort the neighbours based on direction in each node 
+        foreach (Node node in nodes)
+        {
+            node.Sortneighbours();
         }
     }
 
@@ -62,23 +69,23 @@ public class GridScript : MonoBehaviour
             float diagonalDistance = Mathf.Sqrt(Mathf.Pow(cellSize.x, 2) + Mathf.Pow(cellSize.y, 2)) + 0.1f;
 
             //add neighbours to list and current node to the neighbours' list
-            if ((nodes[i].Position - currentNode.Position).magnitude < diagonalDistance)
+            if ((nodes[i].getPosition - currentNode.getPosition).magnitude < diagonalDistance)
             {
                 currentNode.neighbours.Add(nodes[i]);
                 nodes[i].neighbours.Add(currentNode);
             }
         }
     }
-
+    
     public Node GetLowestAvailableNode(Node node)
     {
-        int nodeID = node.ID;
+        int nodeID = node.getID;
         int lowestNodeID;
 
         //get the ID of the lowest node in the column
-        while (nodeID >= 7)
+        while (nodeID >= rowLength)
         {
-            nodeID -= 7;
+            nodeID -= rowLength;
         }
 
         //check every node in the column starting at the bottom
@@ -95,5 +102,48 @@ public class GridScript : MonoBehaviour
 
         Debug.Log("Column is full");
         return null;
+    }
+
+    public bool ConnectFour(Node node, Node.direction dir, int playerID)
+    {
+        bool otherDirChecked = false;
+        int totalConnected = 1;
+        Node.direction tempDir = dir;
+        Node tempNode = node;
+        Node neighbour;
+
+        while (totalConnected < 4)
+        {
+            neighbour = tempNode.CheckNeighbour(tempDir, playerID);
+            //if the neighbour contains a coin of the current player
+            if (neighbour != null)
+            {
+                totalConnected++;
+                tempNode = neighbour;
+            }
+            //if we haven't checked the opposite direction yet
+            else if (!otherDirChecked)
+            {
+                //reset tempNode to check the opposite direction
+                tempNode = node;
+
+                //get the opposite direction
+                int direction = (int)dir;
+                direction += 4;
+
+                //set the opposite direction
+                tempDir = (Node.direction)direction;
+
+                Debug.Log(tempDir);
+
+                otherDirChecked = true;
+            }
+            //no connect 4 has been found
+            else
+                return false;
+        }
+
+        //a connect 4 has been found
+        return true;
     }
 }
