@@ -6,11 +6,13 @@ using TMPro;
 public class CoinPlacer : MonoBehaviour
 {
     [Header("Game Board")]
-    [SerializeField] private GameObject coin1, coin2;
     [SerializeField] private GridScript grid;
+    [SerializeField] private GameObject coin1;
+    [SerializeField] private GameObject coin2;
 
     [Header("Player Components")]
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private InputScript input;
 
     [Header("UI")]
     [SerializeField] private TMP_Text winText;
@@ -33,20 +35,27 @@ public class CoinPlacer : MonoBehaviour
         {
             if(hit.transform.TryGetComponent<Node>(out Node node))
             {
+                CoinScript coinScript;
                 Node availableNode = grid.GetLowestAvailableNode(node);
+
                 //if column is full, return
                 if (availableNode == null) return;
 
+                //get the position on top of the column to drop the coin from
+                Vector3 spawnPos = grid.coinSpawnPositions[grid.FindColumn(availableNode.id)];
+
                 if (turnManager.getPlayerID == TurnManager.player1)
-                    Instantiate(coin1, availableNode.transform.position, coin1.transform.rotation);
+                    coinScript = Instantiate(coin1, spawnPos, coin1.transform.rotation).GetComponent<CoinScript>();
                 else
-                    Instantiate(coin2, availableNode.transform.position, coin2.transform.rotation);
+                    coinScript = Instantiate(coin2, spawnPos, coin2.transform.rotation).GetComponent<CoinScript>();
+                
+                coinScript.targetPos = availableNode.pos;
 
                 availableNode.occupied = true;
                 availableNode.ownerID = turnManager.getPlayerID;
                 CheckConnectFour(availableNode, turnManager.getPlayerID);
 
-                turnManager.ChangeTurns();
+                turnManager.ChangeTurns(coinScript.animationLength);
             }
         }
         else

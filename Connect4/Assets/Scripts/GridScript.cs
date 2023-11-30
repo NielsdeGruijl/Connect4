@@ -12,10 +12,9 @@ public class GridScript : MonoBehaviour
     [Header("Grid values")]
     [SerializeField] private Vector2Int cellSize;
     [SerializeField] private int rowLength, colLength;
-    
     private int gridWidth, gridHeight;
-    
-    private int nodeID = 0;
+
+    [HideInInspector] public List<Vector3> coinSpawnPositions = new List<Vector3>();
     
     private void Start()
     {
@@ -28,6 +27,7 @@ public class GridScript : MonoBehaviour
 
     private void GenerateGrid()
     {
+        int nodeID = 0;
         //rows
         for(int i = 0; i < colLength;  i++)
         {
@@ -49,6 +49,12 @@ public class GridScript : MonoBehaviour
                 nodes.Add(nodeScript);
                 
                 nodeID++;
+
+                //Add positions above each column to spawn coins for the fall animation
+                if (i == colLength - 1)
+                {
+                    coinSpawnPositions.Add(new Vector3(cellPos.x, cellPos.y + cellSize.y, 0));
+                }
             }
         }
 
@@ -71,7 +77,7 @@ public class GridScript : MonoBehaviour
             float diagonalDistance = Mathf.Sqrt(Mathf.Pow(cellSize.x, 2) + Mathf.Pow(cellSize.y, 2)) + 0.1f;
 
             //find and store all neighbours
-            if ((nodes[i].getPosition - currentNode.getPosition).magnitude < diagonalDistance)
+            if ((nodes[i].pos - currentNode.pos).magnitude < diagonalDistance)
             {
                 currentNode.neighbours.Add(nodes[i]);
             }
@@ -80,7 +86,7 @@ public class GridScript : MonoBehaviour
     
     public Node GetLowestAvailableNode(Node node)
     {
-        int nodeID = node.getID;
+        int nodeID = node.id;
         int lowestNodeID;
 
         //get the ID of the lowest node in the column
@@ -135,7 +141,7 @@ public class GridScript : MonoBehaviour
                 //set the opposite direction
                 tempDir = (Node.direction)direction;
 
-                Debug.Log(tempDir);
+                //Debug.Log(tempDir);
 
                 otherDirChecked = true;
             }
@@ -146,5 +152,13 @@ public class GridScript : MonoBehaviour
 
         //a connect 4 has been found
         return true;
+    }
+
+    public int FindColumn(int nodeID)
+    {
+        if(nodeID == 0)
+            return 0;
+        
+        return nodeID % rowLength;
     }
 }

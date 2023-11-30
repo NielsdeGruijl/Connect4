@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Jobs;
 using UnityEngine;
 
 public class InputScript : MonoBehaviour
@@ -8,6 +9,7 @@ public class InputScript : MonoBehaviour
     [SerializeField] private CameraController cameraController;
 
     private bool inputLocked = false;
+    public bool InputLocked { set { inputLocked = value; } get { return inputLocked; } }
 
     void Update()
     {
@@ -16,11 +18,6 @@ public class InputScript : MonoBehaviour
             PlayerInput();
             CameraInput();
         }
-    }
-
-    public void LockInput(bool value)
-    {
-        inputLocked = value;
     }
 
     void PlayerInput()
