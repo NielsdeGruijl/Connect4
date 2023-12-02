@@ -6,18 +6,24 @@ using UnityEngine;
 public class GridScript : MonoBehaviour
 {
     [Header("Grid Content")]
+    [SerializeField] private Transform nodeParent;
     [SerializeField] private GameObject node;
     private List<Node> nodes = new List<Node>();
 
     [Header("Grid values")]
     [SerializeField] private Vector2Int cellSize;
-    [SerializeField] private int rowLength, colLength;
+    [SerializeField] public int rowLength;
+    [SerializeField] public int colLength;
     private int gridWidth, gridHeight;
 
+    public Vector2Int GridSize { get; private set; }
+
     [HideInInspector] public List<Vector3> coinSpawnPositions = new List<Vector3>();
-    
-    private void Start()
+
+    private void Awake()
     {
+        GridSize = new Vector2Int(rowLength, colLength);
+
         //the row and column at position 0 shouldn't be accounted for in the "grid size"
         gridWidth = (rowLength - 1) * cellSize.x;
         gridHeight = (colLength - 1) * cellSize.y;
@@ -41,7 +47,7 @@ public class GridScript : MonoBehaviour
 
                 //initialize the node
                 GameObject nodeObject = Instantiate(node, cellPos, Quaternion.identity);
-                nodeObject.transform.parent = transform;
+                nodeObject.transform.parent = nodeParent;
                 nodeObject.transform.name = $"Node {nodeID}";
 
                 Node nodeScript = nodeObject.GetComponent<Node>();
@@ -84,9 +90,8 @@ public class GridScript : MonoBehaviour
         }
     }
     
-    public Node GetLowestAvailableNode(Node node)
+    public Node GetLowestAvailableNode(int nodeID)
     {
-        int nodeID = node.id;
         int lowestNodeID;
 
         //get the ID of the lowest node in the column

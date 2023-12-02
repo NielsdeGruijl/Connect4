@@ -10,39 +10,34 @@ public class TurnManager : MonoBehaviour
     [Header("Time")]
     [SerializeField] private float turnDuration;
 
-    [Header("UI")]
-    [SerializeField] private TMP_Text timerText;
-    [SerializeField] private Image coinImage;
-    [SerializeField] private Color redColor;
-    [SerializeField] private Color greenColor;
-   
+    [Header("External Components")]
+    [SerializeField] private UIManager uiManager;
 
+    private CoinPlacer coinPlacer;
     private InputScript input;
 
     //setting the playerIDs all other scripts will reference
     public const int player1 = 0;
     public const int player2 = 1;
     [Range(player1, player2)] private int playerID;
-    public int getPlayerID { get { return playerID; } }
+    public int PlayerID { get { return playerID; } }
 
     private Coroutine timerCoroutine;
 
     private void Start()
     {
         input = GetComponent<InputScript>();
+        coinPlacer = GetComponent<CoinPlacer>();
         playerID = player1;
         timerCoroutine = StartCoroutine(TurnTimerCo());
+        coinPlacer.SpawnCoin(playerID);
+
+        uiManager.UpdateTurnUI(turnDuration);
     }
 
     private IEnumerator TurnTimerCo()
     {
-        float timeElapsed = turnDuration;
-        while (timeElapsed > 0)
-        {
-            timeElapsed -= Time.deltaTime;
-            timerText.text = Mathf.CeilToInt(timeElapsed).ToString();
-            yield return null;
-        }
+        yield return new WaitForSeconds(turnDuration);
         ChangeTurns(0.1f);
     }
 
@@ -53,22 +48,21 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator ChangeTurnsCo(float duration)
     {
-        input.InputLocked = true;
+        input.inputLocked = true;
 
         yield return new WaitForSeconds(duration);
         
         if (playerID == player1)
-        {
             playerID = player2;
-            coinImage.color = greenColor;
-        }
         else
-        {
             playerID = player1;
-            coinImage.color = redColor;
-        }
 
-        input.InputLocked = false;
+        coinPlacer.DestroyCoin();
+        coinPlacer.SpawnCoin(playerID);
+
+        input.inputLocked = false;
+
+        uiManager.UpdateTurnUI(turnDuration);
         
         StopCoroutine(timerCoroutine);
         timerCoroutine = StartCoroutine(TurnTimerCo());

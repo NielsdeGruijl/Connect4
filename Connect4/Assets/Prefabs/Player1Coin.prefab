@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6962275884297636598}
   - component: {fileID: 9159976766513794608}
   m_Layer: 0
-  m_Name: RedCoin
+  m_Name: Player1Coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 647730339021537158}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9159976766513794608
 MonoBehaviour:
@@ -97,7 +97,7 @@ Transform:
   m_GameObject: {fileID: 6232921875966496837}
   m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1, y: 0.2, z: 2.1}
+  m_LocalScale: {x: 2.1, y: 0.5, z: 2.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6962275884297636598}

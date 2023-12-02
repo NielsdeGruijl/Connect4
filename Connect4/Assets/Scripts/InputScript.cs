@@ -5,27 +5,47 @@ using UnityEngine;
 
 public class InputScript : MonoBehaviour
 {
-    [SerializeField] private CoinPlacer coinPlacer;
     [SerializeField] private CameraController cameraController;
+    private CoinPlacer coinPlacer;
+    private TurnManager turnManager;
 
-    private bool inputLocked = false;
-    public bool InputLocked { set { inputLocked = value; } get { return inputLocked; } }
+    public bool inputLocked = false;
+
+    private void Start()
+    {
+        coinPlacer = GetComponent<CoinPlacer>();
+        turnManager = GetComponent<TurnManager>();
+    }
 
     void Update()
     {
         if (!inputLocked)
         {
-            PlayerInput();
+            MoveCoinInput();
             CameraInput();
         }
     }
 
-    void PlayerInput()
+    void MoveCoinInput()
     {
-        if(Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.A))
+                coinPlacer.MoveCoinToColumn(-1);
+            if(Input.GetKeyDown(KeyCode.D))
+                coinPlacer.MoveCoinToColumn(1);
+            if (Input.GetKeyDown(KeyCode.S))
+                coinPlacer.LockInColumn();
+/*        if(turnManager.PlayerID == TurnManager.player1)
         {
-            coinPlacer.SelectPosition();
         }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.LeftArrow))
+                coinPlacer.MoveCoinToColumn(-1);
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                coinPlacer.MoveCoinToColumn(1);
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                coinPlacer.LockInColumn();
+        }*/
     }
 
     void CameraInput()

@@ -6,29 +6,29 @@ using UnityEngine;
 public class CoinScript : MonoBehaviour
 {
     [SerializeField] private AnimationCurve curve;
-    public Vector3 targetPos;
     private Vector3 startPos;
     private Vector3 distanceToTarget;
 
     public float animationLength { get { return curve.keys[1].time; } }
 
-    private void Start()
+    public void DropCoin(Vector3 targetPos)
     {
-        startPos = transform.position;
+        startPos = transform.localPosition;
         distanceToTarget = targetPos - startPos;
-
-        StartCoroutine(AnimateCoinFallCo());
+        StartCoroutine(AnimateCoinFallCo(targetPos));
     }
 
-    private IEnumerator AnimateCoinFallCo()
+    private IEnumerator AnimateCoinFallCo(Vector3 targetPos)
     {
         float timeElapsed = 0;
-        while (timeElapsed < curve.length)
+        while (timeElapsed < animationLength)
         {
             yield return null;
             timeElapsed += Time.deltaTime;
-            transform.position = startPos + distanceToTarget * curve.Evaluate(timeElapsed);
+            transform.localPosition = startPos + distanceToTarget * curve.Evaluate(timeElapsed);
         }
-        transform.position = startPos + distanceToTarget * curve.Evaluate(curve.keys[1].time);
+        transform.localPosition = targetPos;
+
+        
     }
 }
