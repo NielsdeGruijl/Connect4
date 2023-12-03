@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEditor.Experimental.GraphView;
 
 public class CoinPlacer : MonoBehaviour
 {
@@ -17,7 +15,7 @@ public class CoinPlacer : MonoBehaviour
     private InputScript input;
 
     [Header("UI")]
-    [SerializeField] private UIManager uiManager;
+    [SerializeField] private GameManagerScript connect4Handler;
 
     //External components
     private Camera cam;
@@ -28,7 +26,9 @@ public class CoinPlacer : MonoBehaviour
     private int columnPosition;
     private float animLength;
 
-    private bool gameWon = false;
+    public bool gameWon = false;
+
+    private List<GameObject> placedCoins = new List<GameObject>();
 
     private void Start()
     {
@@ -49,6 +49,7 @@ public class CoinPlacer : MonoBehaviour
         else
             coinScript = Instantiate(coin2, coinParent).GetComponent<CoinScript>();
 
+        grid.placedCoins.Add(coinScript.gameObject);
         MoveCoinToColumn(1);
     }
 
@@ -65,7 +66,6 @@ public class CoinPlacer : MonoBehaviour
     {
         int lastColumnPos = columnPosition;
         columnPosition += direction;
-        Debug.Log(columnPosition);
         columnPosition = Mathf.Clamp(columnPosition, 0, grid.GridSize.x - 1);
         if(coinScript != null && columnPosition != lastColumnPos)
             coinScript.transform.localPosition = grid.coinSpawnPositions[grid.FindColumn(columnPosition)];
@@ -82,7 +82,7 @@ public class CoinPlacer : MonoBehaviour
 
         availableNode.occupied = true;
         availableNode.ownerID = turnManager.PlayerID;
-        CheckConnectFour(availableNode, turnManager.PlayerID);
+        CheckConnect4(availableNode, turnManager.PlayerID);
 
         animLength = coinScript.animationLength;
         coinScript = null;
@@ -93,21 +93,30 @@ public class CoinPlacer : MonoBehaviour
             turnManager.StopAllCoroutines();
     }
 
-    private void CheckConnectFour(Node node, int playerID)
+    private void CheckConnect4(Node node, int playerID)
     {
-        //Check for 4 connected coins along each possible axis (ConnectFour checks both the given and opposite direction)
-        if (grid.ConnectFour(node, Node.direction.topLeft, playerID) || grid.ConnectFour(node, Node.direction.top, playerID) ||
-           grid.ConnectFour(node, Node.direction.topRight, playerID) || grid.ConnectFour(node, Node.direction.right, playerID))
+        List<Node> connectedNodes = new List<Node>();
+
+        //Check for 4 connected coins along each possible axis (grid.FindConnect4 checks both the given and opposite direction)
+        for(int i = 0; i < 4; i++)
         {
-            gameWon = true;
-            StartCoroutine(showWinTextCo(playerID));
+            //get the direction enum by integer and check that axis
+            Node.direction dir = (Node.direction)i;
+            connectedNodes = grid.FindConnect4(node, dir, playerID);
+
+            if(connectedNodes.Count >= 4)
+            {
+                gameWon = true;
+                StartCoroutine(showWinTextCo(playerID, connectedNodes));
+                break;
+            }
         }
     }
 
-    private IEnumerator showWinTextCo(int playerID)
+    private IEnumerator showWinTextCo(int playerID, List<Node> connectedNodes)
     {
         yield return new WaitForSeconds(animLength);
         input.inputLocked = true;
-        uiManager.DisplayWinText(playerID);
+        connect4Handler.HandleConnect4(playerID, connectedNodes);
     }
 }

@@ -26,10 +26,13 @@ public class Node : MonoBehaviour
     public bool occupied;
     public int ownerID;
 
+    public float multiplier;
+
     public void Initialize(int id, Vector2 pos)
     {
         this.id = id;
         this.pos = pos;
+        multiplier = 1f;
     }
 
     public void Sortneighbours()

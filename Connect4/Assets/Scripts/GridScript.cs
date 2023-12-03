@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class GridScript : MonoBehaviour
     public Vector2Int GridSize { get; private set; }
 
     [HideInInspector] public List<Vector3> coinSpawnPositions = new List<Vector3>();
+    [HideInInspector] public List<GameObject> placedCoins = new List<GameObject>();
 
     private void Awake()
     {
@@ -112,19 +114,25 @@ public class GridScript : MonoBehaviour
                 return nodes[lowestNodeID];
         }
 
-        Debug.Log("Column is full");
+        //Debug.Log("Column is full");
         return null;
     }
 
-    public bool ConnectFour(Node node, Node.direction dir, int playerID)
+    public List<Node> FindConnect4(Node node, Node.direction dir, int playerID)
     {
         bool otherDirChecked = false;
         int totalConnected = 1;
         Node.direction tempDir = dir;
         Node tempNode = node;
-        Node neighbour;
+        Node neighbour = node;
 
-        while (totalConnected < 4)
+        List<Node> connectedNodes = new List<Node>
+        {
+            node
+        };
+
+        //keep checking until both directions have been explored
+        while (!otherDirChecked || neighbour != null)
         {
             neighbour = tempNode.CheckNeighbour(tempDir, playerID);
             //if the neighbour contains a coin of the current player
@@ -132,12 +140,15 @@ public class GridScript : MonoBehaviour
             {
                 totalConnected++;
                 tempNode = neighbour;
+
+                connectedNodes.Add(neighbour);
             }
             //if we haven't checked the opposite direction yet
             else if (!otherDirChecked)
             {
                 //reset tempNode
                 tempNode = node;
+                neighbour = node;
 
                 //get the opposite direction
                 int direction = (int)dir;
@@ -150,13 +161,11 @@ public class GridScript : MonoBehaviour
 
                 otherDirChecked = true;
             }
-            //no connect 4 has been found
-            else
-                return false;
         }
+        
+        //Debug.Log(connectedNodes.Count);
 
-        //a connect 4 has been found
-        return true;
+        return connectedNodes;
     }
 
     public int FindColumn(int nodeID)
@@ -165,5 +174,21 @@ public class GridScript : MonoBehaviour
             return 0;
         
         return nodeID % rowLength;
+    }
+
+    public void ClearGrid()
+    {
+        int totalCoins = placedCoins.Count - 1;
+        for(int i = totalCoins; i >= 0; i--)
+        {
+            Destroy(placedCoins[i]);
+        }
+
+        placedCoins.Clear();
+
+        foreach(Node node in nodes)
+        {
+            node.occupied = false;
+        }
     }
 }
