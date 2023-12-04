@@ -845,42 +845,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1203825877}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &615278130
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 615278131}
-  m_Layer: 5
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &615278131
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615278130}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2117319027}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &653985793 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3694031312215861981, guid: 0ac3cbf1dfe50ef45b60f0ec4587d432,
@@ -935,6 +899,7 @@ GameObject:
   - component: {fileID: 732862121}
   - component: {fileID: 732862123}
   - component: {fileID: 732862122}
+  - component: {fileID: 732862125}
   - component: {fileID: 732862124}
   m_Layer: 5
   m_Name: TotalScoreText
@@ -942,7 +907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &732862121
 RectTransform:
   m_ObjectHideFlags: 0
@@ -960,7 +925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -232.31999, y: 233.76}
+  m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &732862122
@@ -1081,6 +1046,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &732862125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732862120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb040673db256e41be85886a91c4c61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 732862124}
+  healthManager: {fileID: 1015716553}
+  uiManager: {fileID: 1604198770}
+  score: 0
+  targetID: 0
 --- !u!4 &740636787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 934433626019467332, guid: 25bcaed2b2a9217479a09048f9695633,
@@ -1745,14 +1727,15 @@ GameObject:
   - component: {fileID: 1195711312}
   - component: {fileID: 1195711314}
   - component: {fileID: 1195711313}
+  - component: {fileID: 1195711316}
   - component: {fileID: 1195711315}
   m_Layer: 5
-  m_Name: BonusScore
+  m_Name: BonusScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1195711312
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1760,7 +1743,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1195711311}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1802,7 +1785,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1880,10 +1863,10 @@ Animator:
   m_GameObject: {fileID: 1195711311}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1f49591207e7cd2439df42a5ff7d785f, type: 2}
+  m_Controller: {fileID: 9100000, guid: 07289fbd30cc8de45a4e8de5e411bf1e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -1891,6 +1874,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1195711316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195711311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bead8a458d1b584ca0ad6f37acf9c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1195711315}
+  totalScoreUI: {fileID: 732862125}
+  score: 0
 --- !u!1 &1200857177
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,15 +2228,15 @@ MonoBehaviour:
   coinImage: {fileID: 358758316}
   timerText: {fileID: 4953511}
   winText: {fileID: 2035147418}
-  scoreText: {fileID: 732862122}
-  bonusScoreText: {fileID: 1195711313}
+  totalScoreUI: {fileID: 732862125}
+  bonusScoreUI: {fileID: 1195711316}
   p1HealthGO: {fileID: 689064648}
   p2HealthGO: {fileID: 1732206613}
   p1Health: {fileID: 2039110474}
   p2Health: {fileID: 1691928589}
   turnManager: {fileID: 1015716551}
-  playerHealth: {fileID: 1015716553}
   gameManager: {fileID: 1604198771}
+  canAnimateScore: 0
 --- !u!114 &1604198771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3133,7 +3131,6 @@ RectTransform:
   m_Children:
   - {fileID: 732862121}
   - {fileID: 1195711312}
-  - {fileID: 615278131}
   m_Father: {fileID: 2099598190}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
