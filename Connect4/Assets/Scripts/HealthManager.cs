@@ -15,7 +15,7 @@ public class HealthManager : MonoBehaviour
 
     public void ApplyDamage(int playerID, int score)
     {
-        Debug.Log(playerID);
+        //Debug.Log(playerID);
         float healthAdjustment = 0;
 
         int tempScore = Mathf.RoundToInt(score / scoreToDamageConversion);

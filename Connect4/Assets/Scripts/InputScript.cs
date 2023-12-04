@@ -28,18 +28,20 @@ public class InputScript : MonoBehaviour
 
     void MoveCoinInput()
     {
-            if (Input.GetKeyDown(KeyCode.A))
-                coinPlacer.MoveCoinToColumn(-1);
-            if(Input.GetKeyDown(KeyCode.D))
-                coinPlacer.MoveCoinToColumn(1);
-            if (Input.GetKeyDown(KeyCode.S))
-                coinPlacer.LockInColumn();
-/*        if(turnManager.PlayerID == TurnManager.player1)
+        if (Input.GetKeyDown(KeyCode.A))
+            coinPlacer.MoveCoinToColumn(-1);
+        if (Input.GetKeyDown(KeyCode.D))
+            coinPlacer.MoveCoinToColumn(1);
+        if (Input.GetKeyDown(KeyCode.S))
+            coinPlacer.LockInColumn();
+
+/*        if (turnManager.PlayerID == TurnManager.player1)
         {
+
         }
         else
         {
-            if(Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
                 coinPlacer.MoveCoinToColumn(-1);
             if (Input.GetKeyDown(KeyCode.RightArrow))
                 coinPlacer.MoveCoinToColumn(1);

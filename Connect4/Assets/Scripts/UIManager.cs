@@ -225,7 +225,7 @@ public class UIManager : MonoBehaviour
         }
 
         StartCoroutine(ApplyScoreAnim(playerID));
-
-        //scoreText.GetComponent<Animator>().SetTrigger("ApplyScoreP1");
+            
+        //scoreText.GetComponent<Animator>().SetTrigger("P1");
     }
 }

@@ -935,6 +935,7 @@ GameObject:
   - component: {fileID: 732862121}
   - component: {fileID: 732862123}
   - component: {fileID: 732862122}
+  - component: {fileID: 732862124}
   m_Layer: 5
   m_Name: TotalScoreText
   m_TagString: Untagged
@@ -959,7 +960,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: -232.31999, y: 233.76}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &732862122
@@ -1059,6 +1060,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732862120}
   m_CullTransparentMesh: 1
+--- !u!95 &732862124
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732862120}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 97502fb654925eb4592decebc239674b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &740636787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 934433626019467332, guid: 25bcaed2b2a9217479a09048f9695633,
@@ -2216,9 +2238,7 @@ MonoBehaviour:
   p2Health: {fileID: 1691928589}
   turnManager: {fileID: 1015716551}
   playerHealth: {fileID: 1015716553}
-  grid: {fileID: 1271849397}
-  input: {fileID: 1015716552}
-  coinPlacer: {fileID: 1015716549}
+  gameManager: {fileID: 1604198771}
 --- !u!114 &1604198771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2233,6 +2253,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseConnect4Score: 100
   bonusCoinScore: 100
+  grid: {fileID: 1271849397}
+  turnManager: {fileID: 1015716551}
+  input: {fileID: 1015716552}
+  coinPlacer: {fileID: 1015716549}
 --- !u!1 &1691928587
 GameObject:
   m_ObjectHideFlags: 0
