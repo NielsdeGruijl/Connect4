@@ -84,7 +84,6 @@ public class UIManager : MonoBehaviour
             yield return null;
             health = Mathf.Lerp(health, newHealth, 0.1f);
             playerHealth.value = Mathf.Clamp(health, 0, 1);
-            Debug.Log(health);
         }
         playerHealth.value = Mathf.Clamp(newHealth, 0, 1);
         gameManager.ResetBoard();
@@ -152,8 +151,6 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.5f);
-
         if (playerID == TurnManager.player1)
         {
             totalScoreUI.PlayAnimation(TotalScoreUI.applyP2Anim);
@@ -165,71 +162,4 @@ public class UIManager : MonoBehaviour
             totalScoreUI.targetID = TurnManager.player1;
         }
     }
-
-
-
-/*    private IEnumerator AddScoreCo(int scoreToAdd)
-    {
-        int targetScore = score + scoreToAdd;
-        float _currentScore = score;
-
-        yield return new WaitForSeconds(0.2f);
-
-        while (score < targetScore)
-        {
-            yield return null;
-            _currentScore = Mathf.Lerp(_currentScore, targetScore, 0.01f);
-            score = Mathf.CeilToInt(_currentScore);
-            scoreText.text = this.score.ToString();
-        }
-        canAnimateScore = true;
-    }*/
-
-    /*    private IEnumerator AnimateBonusScoreCo(int bonusScore)
-        {
-            Vector3 currentpos = bonusScoreText.rectTransform.localPosition;
-            Vector3 targetpos = scoreText.rectTransform.localPosition;
-            Color targetColor = new Color(bonusScoreText.color.r, bonusScoreText.color.g, bonusScoreText.color.b, 0);
-
-            while ((targetpos - currentpos).magnitude > 0.1f)
-            {
-                yield return null;
-                currentpos = Vector3.Lerp(currentpos, targetpos, 0.1f);
-                bonusScoreText.rectTransform.localPosition = currentpos;
-                bonusScoreText.color = Color.Lerp(bonusScoreText.color, targetColor, 0.1f);
-            }
-
-            bonusScoreText.gameObject.SetActive(false);
-            bonusScoreText.rectTransform.localPosition = Vector3.zero;
-            StartCoroutine(AddScoreCo(bonusScore));
-        }*/
-
-    /*private IEnumerator ApplyScoreAnim(int playerID)
-    {
-        Vector3 healthPos;
-        if (playerID == TurnManager.player1)
-            healthPos = p2HealthGO.transform.localPosition;
-        else
-            healthPos = p1HealthGO.transform.localPosition;
-
-        Vector3 startPos = scoreText.rectTransform.localPosition;
-        Vector3 scorePos = startPos;
-
-        yield return new WaitForSeconds(0.2f);
-
-        while ((healthPos - scorePos).magnitude > 10)
-        {
-            scorePos = Vector3.Lerp(scorePos, healthPos, 0.01f);
-            scoreText.rectTransform.localPosition = scorePos;
-            yield return null;
-        }
-
-        scoreText.gameObject.SetActive(false);
-        scoreText.rectTransform.localPosition = startPos;
-        playerHealth.ApplyDamage(playerID, score);
-
-        yield return new WaitForSeconds(1f);
-
-        gameManager.ResetBoard();
-    }*/
 }

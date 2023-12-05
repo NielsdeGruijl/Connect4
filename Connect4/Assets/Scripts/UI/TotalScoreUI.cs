@@ -10,6 +10,7 @@ public class TotalScoreUI : MonoBehaviour
 {
     //Animations
     public const string idleAnim = "Idle";
+    public const string activeIdleAnim = "ActiveIdle";
     public const string applyP1Anim = "ApplyP1";
     public const string applyP2Anim = "ApplyP2";
 
@@ -24,11 +25,8 @@ public class TotalScoreUI : MonoBehaviour
 
     public int targetID;
 
-    private Vector3 startPos;
-
     private void Start()
     {
-        startPos = transform.localPosition;
         scoreText = GetComponent<TMP_Text>();
         scoreText.enabled = false;
     }
@@ -63,12 +61,7 @@ public class TotalScoreUI : MonoBehaviour
 
         scoreText.enabled = enabled;
     }
-
-    public void ResetPosition()
-    {
-        transform.localPosition = startPos;
-    }
-
+    
     //Adds potential bonus score to the total score
     public void AddScore(int score)
     {
