@@ -66,5 +66,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c30eb796154a946a2ade1cf728dec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1: 0
-  player2: 0
+  neighbours: []
+  occupied: 0
+  ownerID: 0
+  multiplier: 0
+  UIParent: {fileID: 0}
+  multiplierUI: {fileID: 6076452143440303208, guid: abf4ebf1bc7258b4ebbc9574b09a3fa4,
+    type: 3}

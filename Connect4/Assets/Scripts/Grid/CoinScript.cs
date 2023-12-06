@@ -28,7 +28,5 @@ public class CoinScript : MonoBehaviour
             transform.localPosition = startPos + distanceToTarget * curve.Evaluate(timeElapsed);
         }
         transform.localPosition = targetPos;
-
-        
     }
 }

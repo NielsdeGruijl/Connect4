@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Node : MonoBehaviour
@@ -28,8 +29,19 @@ public class Node : MonoBehaviour
 
     public float multiplier;
 
+    //UI elements
+    public Transform UIParent;
+    public GameObject multiplierUI;
+    private TMP_Text multiplierText;
+
+    //Initializes variables of the node, called when the node is created
     public void Initialize(int id, Vector2 pos)
     {
+        GameObject uiObject = Instantiate(multiplierUI, UIParent);
+        multiplierText = uiObject.GetComponent<TMP_Text>();
+        multiplierText.transform.position = new Vector3(transform.position.x, transform.position.y, UIParent.transform.position.z);
+        multiplierText.enabled = false;
+
         this.id = id;
         this.pos = pos;
         multiplier = 1f;
@@ -56,7 +68,6 @@ public class Node : MonoBehaviour
             {
                 directionalNeighbours.Add(direction.right, node);
             }
-                
 
             //check if the neighbour is below (bottomLeft, bottom, bottomRight)
             if(node.pos.y < pos.y)
@@ -88,5 +99,18 @@ public class Node : MonoBehaviour
         {
             return null;
         }
+    }
+
+    public void SetMultiplier(float multiplier)
+    {
+        this.multiplier = multiplier;
+        multiplierText.enabled = true;
+        multiplierText.text = $"{multiplier}x";
+    }
+
+    public void ResetMultiplier()
+    {
+        multiplier = 1;
+        multiplierText.enabled = false;
     }
 }

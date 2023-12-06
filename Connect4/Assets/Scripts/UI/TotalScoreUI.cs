@@ -22,7 +22,6 @@ public class TotalScoreUI : MonoBehaviour
     private string currentAnim;
 
     public int score;
-
     public int targetID;
 
     private void Start()
@@ -50,6 +49,7 @@ public class TotalScoreUI : MonoBehaviour
         healthManager.ApplyDamage(targetID, score);
     }
 
+    //enable or disable the text component
     public void SetActive(int value)
     {
         bool enabled;
@@ -58,7 +58,6 @@ public class TotalScoreUI : MonoBehaviour
         else
             enabled = true;
             
-
         scoreText.enabled = enabled;
     }
     
@@ -71,16 +70,17 @@ public class TotalScoreUI : MonoBehaviour
     private IEnumerator AddScoreCo(int scoreToAdd)
     {
         int targetScore = score + scoreToAdd;
-        float _currentScore = score;
+        float currentScore = score;
 
         yield return new WaitForSeconds(0.2f);
 
-        while (score < targetScore)
+        while (Mathf.Abs(currentScore - targetScore) >= 0.1f)
         {
             yield return null;
-            _currentScore = Mathf.Lerp(_currentScore, targetScore, 0.01f);
-            score = Mathf.CeilToInt(_currentScore);
-            scoreText.text = this.score.ToString();
+            currentScore = Mathf.Lerp(currentScore, targetScore, 0.01f);
+            score = Mathf.RoundToInt(currentScore);
+            
+            scoreText.text = score.ToString();
         }
         uiManager.canAnimateScore = true;
     }

@@ -18,7 +18,6 @@ public class CoinPlacer : MonoBehaviour
     [SerializeField] private GameManagerScript connect4Handler;
 
     //External components
-    private Camera cam;
     private TurnManager turnManager;
 
     //Coin variables
@@ -26,16 +25,13 @@ public class CoinPlacer : MonoBehaviour
     private int columnPosition;
     private float animLength;
 
-    public bool gameWon = false;
-
-    private List<GameObject> placedCoins = new List<GameObject>();
+    public bool gameWon = false; //========== FIX THIS SHIT ==============
 
     private void Start()
     {
         input = GetComponent<InputScript>();
         turnManager = GetComponent<TurnManager>();
         Cursor.lockState = CursorLockMode.Locked;
-        cam = Camera.main;
     }
 
     public void SpawnCoin(int playerID)
@@ -81,8 +77,8 @@ public class CoinPlacer : MonoBehaviour
         coinScript.DropCoin(availableNode.transform.localPosition);
 
         availableNode.occupied = true;
-        availableNode.ownerID = turnManager.PlayerID;
-        CheckConnect4(availableNode, turnManager.PlayerID);
+        availableNode.ownerID = TurnManager.playerID;
+        CheckConnect4(availableNode, TurnManager.playerID);
 
         animLength = coinScript.animationLength;
         coinScript = null;

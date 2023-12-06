@@ -1,11 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro.EditorUtilities;
-using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.UIElements;
 
 public class GridScript : MonoBehaviour
 {
+    Camera cam;
+
     [Header("Grid Content")]
     [SerializeField] private Transform nodeParent;
     [SerializeField] private GameObject node;
@@ -16,8 +18,16 @@ public class GridScript : MonoBehaviour
     [SerializeField] public int rowLength;
     [SerializeField] public int colLength;
     private int gridWidth, gridHeight;
-
     public Vector2Int GridSize { get; private set; }
+
+    [Header("Multipliers")]
+    [SerializeField] private float maxMultipliers;
+    private float chanceToAddMultiplier = 0.1f;
+    private List<Node> nodesWithMultipliers = new List<Node>();
+
+    [Header("Node UI")]
+    [SerializeField] GameObject nodeUI;
+    [SerializeField] Transform nodeUIParent;
 
     [HideInInspector] public List<Vector3> coinSpawnPositions = new List<Vector3>();
     [HideInInspector] public List<GameObject> placedCoins = new List<GameObject>();
@@ -30,7 +40,15 @@ public class GridScript : MonoBehaviour
         gridWidth = (rowLength - 1) * cellSize.x;
         gridHeight = (colLength - 1) * cellSize.y;
 
+        cam = Camera.main;
+
         GenerateGrid();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+            ClearGrid();
     }
 
     private void GenerateGrid()
@@ -53,6 +71,7 @@ public class GridScript : MonoBehaviour
                 nodeObject.transform.name = $"Node {nodeID}";
 
                 Node nodeScript = nodeObject.GetComponent<Node>();
+                nodeScript.UIParent = nodeUIParent;
                 nodeScript.Initialize(nodeID, cellPos);
                 nodes.Add(nodeScript);
                 
@@ -72,6 +91,8 @@ public class GridScript : MonoBehaviour
             AssignNeighbours(node);
             node.Sortneighbours();
         }
+
+        SetMultipliers();
     }
 
     private void AssignNeighbours(Node currentNode)
@@ -113,8 +134,7 @@ public class GridScript : MonoBehaviour
             else
                 return nodes[lowestNodeID];
         }
-
-        //Debug.Log("Column is full");
+        
         return null;
     }
 
@@ -157,13 +177,9 @@ public class GridScript : MonoBehaviour
                 //set the opposite direction
                 tempDir = (Node.direction)direction;
 
-                //Debug.Log(tempDir);
-
                 otherDirChecked = true;
             }
         }
-        
-        //Debug.Log(connectedNodes.Count);
 
         return connectedNodes;
     }
@@ -189,6 +205,42 @@ public class GridScript : MonoBehaviour
         foreach(Node node in nodes)
         {
             node.occupied = false;
+        }
+
+        SetMultipliers();
+    }
+
+    private void SetMultipliers()
+    {
+        if (nodesWithMultipliers.Count > 0)
+        {
+            foreach (Node node in nodesWithMultipliers)
+                node.ResetMultiplier();
+        }
+
+        List<Node> tempNodes = new List<Node>(nodes);
+
+        for(int i = 0; i < maxMultipliers; i++)
+        {
+            int nodeID = Random.Range(0, nodes.Count - i);
+            Node node = tempNodes[nodeID];
+            tempNodes.Remove(node);
+
+            float multiplierVariantChance = 1f/3f;
+            float chance = Random.Range(0f, 1f);
+            float multiplier = 1;
+            
+            if (chance <= multiplierVariantChance)
+                multiplier = 0.5f;
+            else if (chance <= multiplierVariantChance * 2)
+                multiplier = 1.5f;
+            else
+                multiplier = 2f;
+
+            Debug.Log(nodeID);
+            
+            node.SetMultiplier(multiplier);
+            nodesWithMultipliers.Add(node);
         }
     }
 }

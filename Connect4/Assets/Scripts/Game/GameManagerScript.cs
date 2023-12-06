@@ -36,7 +36,6 @@ public class GameManagerScript : MonoBehaviour
         float tempMultiplier = 1;
         foreach(Node node in nodes)
         {
-            //Debug.Log("Multiplier: " + node.multiplier);
             if (node.multiplier <= 0)
                 tempMultiplier = 0;
             else

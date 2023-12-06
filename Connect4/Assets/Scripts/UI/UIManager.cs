@@ -22,30 +22,23 @@ public class UIManager : MonoBehaviour
     [Header("Score UI")]
     [SerializeField] private TotalScoreUI totalScoreUI;
     [SerializeField] private BonusScoreUI bonusScoreUI;
-/*    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text bonusScoreText;*/
+    private string bonusScoreText;
 
     [Header("Health UI")]
-    [SerializeField] private GameObject p1HealthGO;
-    [SerializeField] private GameObject p2HealthGO;
     [SerializeField] private Slider p1Health;
     [SerializeField] private Slider p2Health;
 
     [Header("External Component")]
-    [SerializeField] private TurnManager turnManager;
-    //[SerializeField] private HealthManager playerHealth;
     [SerializeField] private GameManagerScript gameManager;
 
     private Coroutine turnTimerCoroutine;
-
-    private Vector3 bonusScoreTextPosition;
 
     private int score;
     public bool canAnimateScore;
 
     public void UpdateTurnUI(float turnDuration)
     {
-        if(turnManager.PlayerID == TurnManager.player1)
+        if(TurnManager.playerID == TurnManager.player1)
             coinImage.color = player1Color;
         else
             coinImage.color = player2Color;
@@ -108,19 +101,27 @@ public class UIManager : MonoBehaviour
         StartCoroutine(ScoreTallyCo(playerID, bonusScore, multiplier));
     }
 
+    public void AddBonusScore(int bonusScore)
+    {
+        bonusScoreUI.score = (int)bonusScore;
+        bonusScoreText = bonusScore.ToString();
+        StartCoroutine(DisplayBonusScoreCo("Bonus coins"));
+    }
+
     public void ApplyMultiplier(float multiplier)
     {
-        int scoreToAdd = Mathf.CeilToInt(score * multiplier - 1);
-        StartCoroutine(SetBonusScoreCo("Mutliplier", scoreToAdd));
+        bonusScoreText = $"{multiplier}x";
+        multiplier -= 1;
+        bonusScoreUI.score = Mathf.CeilToInt(totalScoreUI.score * multiplier);
+        StartCoroutine(DisplayBonusScoreCo("Mutliplier"));
     }
 
     //Display the bonus score and its source
-    private IEnumerator SetBonusScoreCo(string source, int bonusScore)
+    private IEnumerator DisplayBonusScoreCo(string source)
     {
-        bonusScoreUI.score = bonusScore;
         bonusScoreUI.SetText($"{source}:");
         yield return new WaitForSeconds(1);
-        bonusScoreUI.SetText($"{bonusScore}");
+        bonusScoreUI.SetText(bonusScoreText);
         yield return new WaitForSeconds(1);
         bonusScoreUI.PlayAnimation(BonusScoreUI.addScoreAnim);
     }
@@ -131,12 +132,11 @@ public class UIManager : MonoBehaviour
         if (bonusScore > 0)
         {
             canAnimateScore = false;
-            StartCoroutine(SetBonusScoreCo("Bonus coins", bonusScore));
+            AddBonusScore(bonusScore);
 
+            //wait for animation to end
             while (!canAnimateScore)
-            {
                 yield return null;
-            }
         }
         if(multiplier != 1)
         {
@@ -144,11 +144,9 @@ public class UIManager : MonoBehaviour
             canAnimateScore = false;
             ApplyMultiplier(multiplier);
 
-            while(!canAnimateScore)
-            {
-                Debug.Log(canAnimateScore);
+            //wait for animation to end
+            while (!canAnimateScore)
                 yield return null;
-            }
         }
 
         if (playerID == TurnManager.player1)

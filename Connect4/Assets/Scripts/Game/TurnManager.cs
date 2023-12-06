@@ -19,8 +19,7 @@ public class TurnManager : MonoBehaviour
     //setting the playerIDs all other scripts will reference
     public const int player1 = 0;
     public const int player2 = 1;
-    [Range(player1, player2)] private int playerID;
-    public int PlayerID { get { return playerID; } }
+    [HideInInspector] public static int playerID { get; private set; }
 
     private Coroutine timerCoroutine;
 
