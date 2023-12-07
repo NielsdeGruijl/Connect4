@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class BonusScoreUI : MonoBehaviour
 {
+    //caching animation names
     public const string idleAnim = "Idle";
-    public const string activeIdleAnim = "Idle";
     public const string addScoreAnim = "AddScore";
 
     [SerializeField] private Animator animator;
@@ -50,6 +50,7 @@ public class BonusScoreUI : MonoBehaviour
         totalScoreUI.AddScore(score);
     }
     
+    //enable or disable the text component
     public void SetActive(int value)
     {
         bool enabled;

@@ -9,8 +9,9 @@ public class CoinScript : MonoBehaviour
     private Vector3 startPos;
     private Vector3 distanceToTarget;
 
-    public float animationLength { get { return curve.keys[1].time; } }
+    public float animationLength { get { return curve.keys[curve.length - 1].time; } }
 
+    //Play the falling animation
     public void DropCoin(Vector3 targetPos)
     {
         startPos = transform.localPosition;

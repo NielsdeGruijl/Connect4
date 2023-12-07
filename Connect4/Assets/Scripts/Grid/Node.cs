@@ -18,24 +18,27 @@ public class Node : MonoBehaviour
         left
     }
 
+    //Readonly vars
     public Vector2 pos { get; private set; }
     public int id { get; private set; }
+    public bool occupied { get; private set; }
 
+    [Header("Neighbours")]
     public List<Node> neighbours = new List<Node>();
     private Dictionary<direction, Node> directionalNeighbours = new Dictionary<direction, Node>();
 
-    public bool occupied;
+    [Header("Owning player")]
     public int ownerID;
 
+    [Header("Multiplier")]
     public float multiplier;
 
-    //UI elements
-    public Transform UIParent;
-    public GameObject multiplierUI;
+    [Header("UI elements")]
+    [SerializeField] private GameObject multiplierUI;
     private TMP_Text multiplierText;
 
     //Initializes variables of the node, called when the node is created
-    public void Initialize(int id, Vector2 pos)
+    public void Initialize(int id, Vector2 pos, Transform UIParent)
     {
         GameObject uiObject = Instantiate(multiplierUI, UIParent);
         multiplierText = uiObject.GetComponent<TMP_Text>();
@@ -112,5 +115,15 @@ public class Node : MonoBehaviour
     {
         multiplier = 1;
         multiplierText.enabled = false;
+    }
+
+    public void SetOccupied(bool value)
+    {
+        occupied = value;
+
+        if(value)
+            multiplierText.color = Color.black;
+        else
+            multiplierText.color = Color.white;
     }
 }

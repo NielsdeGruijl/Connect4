@@ -6,8 +6,6 @@ using UnityEngine.UIElements;
 
 public class GridScript : MonoBehaviour
 {
-    Camera cam;
-
     [Header("Grid Content")]
     [SerializeField] private Transform nodeParent;
     [SerializeField] private GameObject node;
@@ -22,12 +20,10 @@ public class GridScript : MonoBehaviour
 
     [Header("Multipliers")]
     [SerializeField] private float maxMultipliers;
-    private float chanceToAddMultiplier = 0.1f;
     private List<Node> nodesWithMultipliers = new List<Node>();
 
     [Header("Node UI")]
-    [SerializeField] GameObject nodeUI;
-    [SerializeField] Transform nodeUIParent;
+    [SerializeField] private Transform nodeUIParent;
 
     [HideInInspector] public List<Vector3> coinSpawnPositions = new List<Vector3>();
     [HideInInspector] public List<GameObject> placedCoins = new List<GameObject>();
@@ -40,15 +36,7 @@ public class GridScript : MonoBehaviour
         gridWidth = (rowLength - 1) * cellSize.x;
         gridHeight = (colLength - 1) * cellSize.y;
 
-        cam = Camera.main;
-
         GenerateGrid();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-            ClearGrid();
     }
 
     private void GenerateGrid()
@@ -71,8 +59,7 @@ public class GridScript : MonoBehaviour
                 nodeObject.transform.name = $"Node {nodeID}";
 
                 Node nodeScript = nodeObject.GetComponent<Node>();
-                nodeScript.UIParent = nodeUIParent;
-                nodeScript.Initialize(nodeID, cellPos);
+                nodeScript.Initialize(nodeID, cellPos, nodeUIParent);
                 nodes.Add(nodeScript);
                 
                 nodeID++;
@@ -189,29 +176,31 @@ public class GridScript : MonoBehaviour
         if(nodeID == 0)
             return 0;
         
+        //nodeID % rowLength will return the nodeID of one of the nodes on the bottom row, essentially returning the column number
         return nodeID % rowLength;
     }
 
     public void ClearGrid()
     {
+        //loop backwards through all placed coins and destroy them
         int totalCoins = placedCoins.Count - 1;
         for(int i = totalCoins; i >= 0; i--)
         {
             Destroy(placedCoins[i]);
         }
-
         placedCoins.Clear();
 
+        //reset the state of each node and regenerate new multipliers
         foreach(Node node in nodes)
         {
-            node.occupied = false;
+            node.SetOccupied(false);
         }
-
         SetMultipliers();
     }
 
     private void SetMultipliers()
     {
+        //reset the old multipliers
         if (nodesWithMultipliers.Count > 0)
         {
             foreach (Node node in nodesWithMultipliers)
@@ -222,13 +211,17 @@ public class GridScript : MonoBehaviour
 
         for(int i = 0; i < maxMultipliers; i++)
         {
+            //pick random node to add a multiplier to
             int nodeID = Random.Range(0, nodes.Count - i);
             Node node = tempNodes[nodeID];
+
+            //remove the node from the list to make sure no node can be picked twice
             tempNodes.Remove(node);
 
+            //generate a random multiplier from the possible options
             float multiplierVariantChance = 1f/3f;
             float chance = Random.Range(0f, 1f);
-            float multiplier = 1;
+            float multiplier;
             
             if (chance <= multiplierVariantChance)
                 multiplier = 0.5f;
@@ -236,8 +229,6 @@ public class GridScript : MonoBehaviour
                 multiplier = 1.5f;
             else
                 multiplier = 2f;
-
-            Debug.Log(nodeID);
             
             node.SetMultiplier(multiplier);
             nodesWithMultipliers.Add(node);

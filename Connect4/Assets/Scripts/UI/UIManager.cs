@@ -8,7 +8,11 @@ using static Unity.VisualScripting.Member;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] Canvas canvas;
+    [SerializeField] private Canvas canvas;
+
+    [Header("General UI")]
+    [SerializeField] private GameObject GameUI;
+    [SerializeField] private GameObject MainMenuUI;
 
     [Header("Turn UI")]
     [SerializeField] private Color player1Color;
@@ -22,6 +26,7 @@ public class UIManager : MonoBehaviour
     [Header("Score UI")]
     [SerializeField] private TotalScoreUI totalScoreUI;
     [SerializeField] private BonusScoreUI bonusScoreUI;
+    [SerializeField] private float bonusScoreTransitionSpeed;
     private string bonusScoreText;
 
     [Header("Health UI")]
@@ -31,34 +36,23 @@ public class UIManager : MonoBehaviour
     [Header("External Component")]
     [SerializeField] private GameManagerScript gameManager;
 
-    private Coroutine turnTimerCoroutine;
-
-    private int score;
     public bool canAnimateScore;
 
-    public void UpdateTurnUI(float turnDuration)
+    private void Start()
+    {
+        GameManagerScript.gameStarted.AddListener(SwapHUDs);
+    }
+
+    //Swap the turn timer UI to the other player color
+    public void SwapTurnUI()
     {
         if(TurnManager.playerID == TurnManager.player1)
             coinImage.color = player1Color;
         else
             coinImage.color = player2Color;
-
-        if(turnTimerCoroutine != null)
-            StopCoroutine(turnTimerCoroutine);
-        turnTimerCoroutine = StartCoroutine(TurnTimerCo(turnDuration));
     }
-
-    private IEnumerator TurnTimerCo(float turnDuration)
-    {
-        float timeElapsed = turnDuration;
-        while (timeElapsed > 0)
-        {
-            timeElapsed -= Time.deltaTime;
-            timerText.text = Mathf.CeilToInt(timeElapsed).ToString();
-            yield return null;
-        }
-    }
-
+    
+    //Set the correct target for the "losing health" animation
     public void AdjustPlayerHealth(int playerID, float adjustment)
     {
         if(playerID == TurnManager.player1)
@@ -67,6 +61,7 @@ public class UIManager : MonoBehaviour
             StartCoroutine(AnimateHealthLost(p2Health, adjustment));
     }
 
+    //Animate healthbar "smoothly" losing health
     private IEnumerator AnimateHealthLost(Slider playerHealth, float adjustment)
     {
         float health = playerHealth.value;
@@ -79,7 +74,8 @@ public class UIManager : MonoBehaviour
             playerHealth.value = Mathf.Clamp(health, 0, 1);
         }
         playerHealth.value = Mathf.Clamp(newHealth, 0, 1);
-        gameManager.ResetBoard();
+
+        gameManager.ResetBoard(); // =========================== CONSIDER FIXING THIS ==========================================
     }
 
     public void DisplayWinText(int playerID)
@@ -88,17 +84,67 @@ public class UIManager : MonoBehaviour
         winText.gameObject.SetActive(true);
     }
 
+    //Swap between main menu and game HUD
+    public void SwapHUDs()
+    {
+        if(GameUI.activeSelf)
+        {
+            MainMenuUI.SetActive(true);
+            GameUI.SetActive(false);
+        }
+        else
+        {
+            MainMenuUI.SetActive(false);
+            GameUI.SetActive(true);
+        }
+    }
 
     // ======================================== ANIMATE SCORE UI ===================================================
 
     public void DisplayScoreText(int playerID, int score, int bonusScore, float multiplier)
     {
-        StopCoroutine(turnTimerCoroutine);
-        this.score = score;
+        //set the base score UI
         totalScoreUI.score = score;
         totalScoreUI.SetText(score.ToString());
 
         StartCoroutine(ScoreTallyCo(playerID, bonusScore, multiplier));
+    }
+
+    // add the bonus score and multiplier if applicable and then apply the total score to opponent health
+    private IEnumerator ScoreTallyCo(int playerID, int bonusScore, float multiplier)
+    {
+        //apply bonus score
+        if (bonusScore > 0)
+        {
+            canAnimateScore = false;
+            AddBonusScore(bonusScore);
+
+            //wait for animation to end
+            while (!canAnimateScore)
+                yield return null;
+        }
+        //apply multiplier
+        if (multiplier != 1)
+        {
+            canAnimateScore = false;
+            ApplyMultiplier(multiplier);
+
+            //wait for animation to end
+            while (!canAnimateScore)
+                yield return null;
+        }
+
+        //play the "apply score" UI animation for the correct player
+        if (playerID == TurnManager.player1)
+        {
+            totalScoreUI.PlayAnimation(TotalScoreUI.applyP2Anim);
+            totalScoreUI.targetID = TurnManager.player2;
+        }
+        else
+        {
+            totalScoreUI.PlayAnimation(TotalScoreUI.applyP1Anim);
+            totalScoreUI.targetID = TurnManager.player1;
+        }
     }
 
     public void AddBonusScore(int bonusScore)
@@ -120,44 +166,9 @@ public class UIManager : MonoBehaviour
     private IEnumerator DisplayBonusScoreCo(string source)
     {
         bonusScoreUI.SetText($"{source}:");
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(bonusScoreTransitionSpeed);
         bonusScoreUI.SetText(bonusScoreText);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(bonusScoreTransitionSpeed);
         bonusScoreUI.PlayAnimation(BonusScoreUI.addScoreAnim);
-    }
-
-    // add the bonus score and multiplier if applicable and then apply the total score to opponent health
-    private IEnumerator ScoreTallyCo(int playerID, int bonusScore, float multiplier)
-    {
-        if (bonusScore > 0)
-        {
-            canAnimateScore = false;
-            AddBonusScore(bonusScore);
-
-            //wait for animation to end
-            while (!canAnimateScore)
-                yield return null;
-        }
-        if(multiplier != 1)
-        {
-            
-            canAnimateScore = false;
-            ApplyMultiplier(multiplier);
-
-            //wait for animation to end
-            while (!canAnimateScore)
-                yield return null;
-        }
-
-        if (playerID == TurnManager.player1)
-        {
-            totalScoreUI.PlayAnimation(TotalScoreUI.applyP2Anim);
-            totalScoreUI.targetID = TurnManager.player2;
-        }
-        else
-        {
-            totalScoreUI.PlayAnimation(TotalScoreUI.applyP1Anim);
-            totalScoreUI.targetID = TurnManager.player1;
-        }
     }
 }

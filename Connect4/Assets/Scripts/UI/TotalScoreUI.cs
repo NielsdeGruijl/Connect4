@@ -8,9 +8,8 @@ using UnityEngine.UI;
 
 public class TotalScoreUI : MonoBehaviour
 {
-    //Animations
+    //caching animation names
     public const string idleAnim = "Idle";
-    public const string activeIdleAnim = "ActiveIdle";
     public const string applyP1Anim = "ApplyP1";
     public const string applyP2Anim = "ApplyP2";
 

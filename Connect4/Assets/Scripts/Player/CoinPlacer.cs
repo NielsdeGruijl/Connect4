@@ -10,29 +10,13 @@ public class CoinPlacer : MonoBehaviour
     [SerializeField] private GameObject coin2;
     [SerializeField] private Transform coinParent;
 
-    [Header("Player Components")]
+    [Header("External Components")]
+    [SerializeField] private GameManagerScript gameManager;
     [SerializeField] private LayerMask layerMask;
-    private InputScript input;
-
-    [Header("UI")]
-    [SerializeField] private GameManagerScript connect4Handler;
-
-    //External components
-    private TurnManager turnManager;
 
     //Coin variables
     private CoinScript coinScript;
     private int columnPosition;
-    private float animLength;
-
-    public bool gameWon = false; //========== FIX THIS SHIT ==============
-
-    private void Start()
-    {
-        input = GetComponent<InputScript>();
-        turnManager = GetComponent<TurnManager>();
-        Cursor.lockState = CursorLockMode.Locked;
-    }
 
     public void SpawnCoin(int playerID)
     {
@@ -58,6 +42,7 @@ public class CoinPlacer : MonoBehaviour
         }
     }
 
+    //move the coin to the column left or right of the current one based on player input
     public void MoveCoinToColumn(int direction)
     {
         int lastColumnPos = columnPosition;
@@ -67,6 +52,7 @@ public class CoinPlacer : MonoBehaviour
             coinScript.transform.localPosition = grid.coinSpawnPositions[grid.FindColumn(columnPosition)];
     }
 
+    //Place the coin in the column it's hovering above
     public void LockInColumn()
     {
         Node availableNode = grid.GetLowestAvailableNode(columnPosition);
@@ -76,43 +62,11 @@ public class CoinPlacer : MonoBehaviour
 
         coinScript.DropCoin(availableNode.transform.localPosition);
 
-        availableNode.occupied = true;
+        availableNode.SetOccupied(true);
         availableNode.ownerID = TurnManager.playerID;
-        CheckConnect4(availableNode, TurnManager.playerID);
-
-        animLength = coinScript.animationLength;
+        
+        gameManager.CheckConnect4(availableNode, TurnManager.playerID, coinScript.animationLength);
+        
         coinScript = null;
-
-        if (!gameWon)
-            turnManager.ChangeTurns(animLength);
-        else
-            turnManager.StopAllCoroutines();
-    }
-
-    private void CheckConnect4(Node node, int playerID)
-    {
-        List<Node> connectedNodes = new List<Node>();
-
-        //Check for 4 connected coins along each possible axis (grid.FindConnect4 checks both the given and opposite direction)
-        for(int i = 0; i < 4; i++)
-        {
-            //get the direction enum by integer and check that axis
-            Node.direction dir = (Node.direction)i;
-            connectedNodes = grid.FindConnect4(node, dir, playerID);
-
-            if(connectedNodes.Count >= 4)
-            {
-                gameWon = true;
-                StartCoroutine(showWinTextCo(playerID, connectedNodes));
-                break;
-            }
-        }
-    }
-
-    private IEnumerator showWinTextCo(int playerID, List<Node> connectedNodes)
-    {
-        yield return new WaitForSeconds(animLength);
-        input.inputLocked = true;
-        connect4Handler.HandleConnect4(playerID, connectedNodes);
     }
 }

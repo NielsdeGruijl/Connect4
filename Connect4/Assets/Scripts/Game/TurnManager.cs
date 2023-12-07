@@ -12,9 +12,8 @@ public class TurnManager : MonoBehaviour
 
     [Header("External Components")]
     [SerializeField] private UIManager uiManager;
-
-    private CoinPlacer coinPlacer;
-    private InputScript input;
+    [SerializeField] private CoinPlacer coinPlacer;
+    [SerializeField] private InputScript input;
 
     //setting the playerIDs all other scripts will reference
     public const int player1 = 0;
@@ -23,47 +22,82 @@ public class TurnManager : MonoBehaviour
 
     private Coroutine timerCoroutine;
 
+    private float turnTimeElapsed;
+    private bool paused = true;
+
     private void Start()
     {
-        input = GetComponent<InputScript>();
-        coinPlacer = GetComponent<CoinPlacer>();
+        turnTimeElapsed = turnDuration;
+        GameManagerScript.gameStarted.AddListener(StartGame);
+        GameManagerScript.gameEnded.AddListener(EndGame);
+    }
+
+    private void Update()
+    {
+        if(paused) return;
+
+        //turn timer
+        if (turnTimeElapsed > 0)
+        {
+            turnTimeElapsed -= Time.deltaTime;
+            uiManager.timerText.text = Mathf.CeilToInt(turnTimeElapsed).ToString();
+            Debug.Log($"{playerID}, {turnTimeElapsed}");
+        }
+        else
+            ChangeTurns();
+    }
+
+    private void StartGame()
+    {
         playerID = player1;
-        timerCoroutine = StartCoroutine(TurnTimerCo());
+        paused = false;
         coinPlacer.SpawnCoin(playerID);
 
-        uiManager.UpdateTurnUI(turnDuration);
+        if(uiManager)
+            uiManager.SwapTurnUI();
     }
 
-    private IEnumerator TurnTimerCo()
+    private void EndGame()
     {
-        yield return new WaitForSeconds(turnDuration);
-        ChangeTurns(0.1f);
+        StopAllCoroutines();
     }
 
-    public void ChangeTurns(float duration)
+    public void ChangeTurns(float duration = 0.1f)
     {
         StartCoroutine(ChangeTurnsCo(duration));
     }
 
     private IEnumerator ChangeTurnsCo(float duration)
     {
+        paused = true;
         input.inputLocked = true;
 
         yield return new WaitForSeconds(duration);
         
+        //swap player IDs
         if (playerID == player1)
             playerID = player2;
         else
             playerID = player1;
 
+        //swap coin prefab
         coinPlacer.DestroyCoin();
         coinPlacer.SpawnCoin(playerID);
 
+        paused = false;
         input.inputLocked = false;
 
-        uiManager.UpdateTurnUI(turnDuration);
-        
-        StopCoroutine(timerCoroutine);
-        timerCoroutine = StartCoroutine(TurnTimerCo());
+        if(uiManager)
+            uiManager.SwapTurnUI();
+
+        //reset the turn duration timer
+        paused = false;
+        turnTimeElapsed = turnDuration;
+    }
+
+    public void Pause()
+    {
+        StopAllCoroutines();
+        paused = true;
     }
 }

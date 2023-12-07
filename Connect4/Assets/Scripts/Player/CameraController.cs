@@ -1,14 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Cinemachine;
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private float camOrbitSpeed;
+    [SerializeField] private CinemachineVirtualCamera vCam;
 
-    public void OrbitBoard(int dir)
+    [SerializeField] private AnimationCurve curve;
+
+    private void Start()
+    {
+        GameManagerScript.gameStarted.AddListener(RotateCamera);
+    }
+
+    private void RotateCamera()
     { 
-        transform.Rotate(new Vector3(0, camOrbitSpeed * dir * Time.deltaTime, 0));
+        StartCoroutine(RotateCameraCo());
+    }
+
+    //Rotates the camera 180 degrees over time to switch between the main menu and game
+    private IEnumerator RotateCameraCo()
+    {
+        CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
+        float currentRotation = pov.m_HorizontalAxis.Value;
+        float targetRotation = 180;
+
+        float timeElapsed = 0;
+
+        while (curve[curve.length-1].time > timeElapsed)
+        {
+            timeElapsed += Time.deltaTime;
+
+            pov.m_HorizontalAxis.Value = currentRotation + curve.Evaluate(timeElapsed) * targetRotation;
+
+            yield return null;
+        }
     }
 }
