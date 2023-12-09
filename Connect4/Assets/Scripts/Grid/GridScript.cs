@@ -54,8 +54,8 @@ public class GridScript : MonoBehaviour
                 Vector2 cellPos = new Vector2(xPosition, yPosition);
 
                 //initialize the node
-                GameObject nodeObject = Instantiate(node, cellPos, Quaternion.identity);
-                nodeObject.transform.parent = nodeParent;
+                GameObject nodeObject = Instantiate(node, nodeParent);
+                nodeObject.transform.localPosition = cellPos;
                 nodeObject.transform.name = $"Node {nodeID}";
 
                 Node nodeScript = nodeObject.GetComponent<Node>();

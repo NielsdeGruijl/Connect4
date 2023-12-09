@@ -8,9 +8,11 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] private AnimationCurve curve;
 
+    [SerializeField] private GameManagerScript gameManager;
+
     private void Start()
     {
-        GameManagerScript.gameStarted.AddListener(RotateCamera);
+        gameManager.gameStarted.AddListener(RotateCamera);
     }
 
     private void RotateCamera()

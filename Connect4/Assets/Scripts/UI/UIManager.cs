@@ -33,14 +33,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider p1Health;
     [SerializeField] private Slider p2Health;
 
-    [Header("External Component")]
+    [Header("External Components")]
     [SerializeField] private GameManagerScript gameManager;
 
     public bool canAnimateScore;
 
     private void Start()
     {
-        GameManagerScript.gameStarted.AddListener(SwapHUDs);
+        gameManager.gameStarted.AddListener(SwapHUDs);
+        gameManager.gameStarted.AddListener(ResetHealthUI);
+        gameManager.gameEnded.AddListener(SwapHUDs);
+        gameManager.gameEnded.AddListener(DisableScoreUI);
     }
 
     //Swap the turn timer UI to the other player color
@@ -75,12 +78,23 @@ public class UIManager : MonoBehaviour
         }
         playerHealth.value = Mathf.Clamp(newHealth, 0, 1);
 
-        gameManager.ResetBoard(); // =========================== CONSIDER FIXING THIS ==========================================
+        yield return new WaitForSeconds(0.1f);
+
+        if (playerHealth.value > 0)
+            gameManager.ResetBoard(); // =========================== CONSIDER FIXING THIS ==========================================
+        else
+            gameManager.EndGame();
     }
 
-    public void DisplayWinText(int playerID)
+    private void ResetHealthUI()
     {
-        winText.text = $"Player {playerID + 1} wins!";
+        p1Health.value = 1;
+        p2Health.value = 1;
+    }
+
+    public void DisplayWinUI()
+    {
+        winText.text = $"Player {TurnManager.playerID + 1} wins!";
         winText.gameObject.SetActive(true);
     }
 
@@ -170,5 +184,11 @@ public class UIManager : MonoBehaviour
         bonusScoreUI.SetText(bonusScoreText);
         yield return new WaitForSeconds(bonusScoreTransitionSpeed);
         bonusScoreUI.PlayAnimation(BonusScoreUI.addScoreAnim);
+    }
+
+    private void DisableScoreUI()
+    {
+        totalScoreUI.SetActive(0);
+        bonusScoreUI.SetActive(0);
     }
 }

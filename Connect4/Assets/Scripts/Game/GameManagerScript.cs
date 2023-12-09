@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,9 +18,9 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private InputScript input;
     private UIManager uiManager;
 
-    public static UnityEvent gameStarted;
-    public static UnityEvent gameEnded;
-
+    public UnityEvent gameStarted;
+    public UnityEvent gameEnded;
+    
     private void Awake()
     {
         gameStarted ??= new UnityEvent();
@@ -43,7 +44,7 @@ public class GameManagerScript : MonoBehaviour
             if (connectedNodes.Count >= 4)
             {
                 HandleConnect4(playerID, connectedNodes);
-                break;
+                return;
             }
         }
 
@@ -57,6 +58,11 @@ public class GameManagerScript : MonoBehaviour
         score = baseConnect4Score;
         int bonusScore = bonusCoinScore * (connectedNodes.Count - 4);
         float multiplier = GetMultiplier(connectedNodes);
+
+        foreach(Node node in connectedNodes)
+        {
+            node.PlayParticles();
+        }
 
         //set the UI animations in motion and stop the turn manager
         uiManager.DisplayScoreText(playerID, score, bonusScore, multiplier);
@@ -81,7 +87,14 @@ public class GameManagerScript : MonoBehaviour
     //starts the game, called on the "Play" button in the main menu
     public void StartGame()
     {
+        grid.ClearGrid();
+        input.inputLocked = false;
         gameStarted?.Invoke();
+    }
+
+    public void EndGame()
+    {
+        gameEnded?.Invoke();
     }
 
     public void ResetBoard()
@@ -89,5 +102,11 @@ public class GameManagerScript : MonoBehaviour
         grid.ClearGrid();
         turnManager.ChangeTurns();
         input.inputLocked = false;
+    }
+
+    //Quits game, called from the "Quit" button on the menu
+    public void QuitGame()
+    {
+        EditorApplication.Exit(0);
     }
 }

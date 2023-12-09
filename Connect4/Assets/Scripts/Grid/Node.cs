@@ -37,6 +37,9 @@ public class Node : MonoBehaviour
     [SerializeField] private GameObject multiplierUI;
     private TMP_Text multiplierText;
 
+    [Header("particles")]
+    [SerializeField] ParticleSystem particles;
+
     //Initializes variables of the node, called when the node is created
     public void Initialize(int id, Vector2 pos, Transform UIParent)
     {
@@ -125,5 +128,15 @@ public class Node : MonoBehaviour
             multiplierText.color = Color.black;
         else
             multiplierText.color = Color.white;
+    }
+
+    public void PlayParticles()
+    {
+        particles.Play();
+    }
+
+    public void StopParticles()
+    {
+        particles.Stop();
     }
 }

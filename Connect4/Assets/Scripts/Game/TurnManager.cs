@@ -14,22 +14,20 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private CoinPlacer coinPlacer;
     [SerializeField] private InputScript input;
+    [SerializeField] private GameManagerScript gameManager;
 
     //setting the playerIDs all other scripts will reference
     public const int player1 = 0;
     public const int player2 = 1;
     [HideInInspector] public static int playerID { get; private set; }
 
-    private Coroutine timerCoroutine;
-
     private float turnTimeElapsed;
     private bool paused = true;
 
     private void Start()
     {
-        turnTimeElapsed = turnDuration;
-        GameManagerScript.gameStarted.AddListener(StartGame);
-        GameManagerScript.gameEnded.AddListener(EndGame);
+        gameManager.gameStarted.AddListener(StartGame);
+        gameManager.gameEnded.AddListener(EndGame);
     }
 
     private void Update()
@@ -41,7 +39,7 @@ public class TurnManager : MonoBehaviour
         {
             turnTimeElapsed -= Time.deltaTime;
             uiManager.timerText.text = Mathf.CeilToInt(turnTimeElapsed).ToString();
-            Debug.Log($"{playerID}, {turnTimeElapsed}");
+            //Debug.Log($"{playerID}, {turnTimeElapsed}");
         }
         else
             ChangeTurns();
@@ -50,6 +48,7 @@ public class TurnManager : MonoBehaviour
     private void StartGame()
     {
         playerID = player1;
+        turnTimeElapsed = turnDuration;
         paused = false;
         coinPlacer.SpawnCoin(playerID);
 
@@ -59,6 +58,7 @@ public class TurnManager : MonoBehaviour
 
     private void EndGame()
     {
+        paused = true;
         StopAllCoroutines();
     }
 

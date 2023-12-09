@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HealthManager : MonoBehaviour
 {
@@ -12,20 +13,41 @@ public class HealthManager : MonoBehaviour
 
     [Header("External components")]
     [SerializeField] private UIManager UIManager;
+    [SerializeField] private GameManagerScript gameManager;
 
-    public void ApplyDamage(int playerID, int score)
+    private float p1Health;
+    private float p2Health;
+
+    private void Start()
+    {
+        gameManager.gameStarted.AddListener(SetHealth);
+    }
+
+    private void SetHealth()
+    {
+        p1Health = p1MaxHealth;
+        p2Health = p2MaxHealth;
+    }
+
+    public void ApplyDamage(int targetID, int score)
     {
         float healthAdjustment;
 
         //convert score to actual damage
         int damage = Mathf.RoundToInt(score / scoreToDamageConversion);
 
-        //convert damage to a percentage of the max health to adjust the healthbar UI
-        if (playerID == TurnManager.player1)
-            healthAdjustment = (float)damage / p2MaxHealth;
-        else
+        //apply damage to health and convert it to a percentage of the max health to adjust the healthbar UI
+        if (targetID == TurnManager.player1)
+        {
             healthAdjustment = (float)damage / p1MaxHealth;
+            p1Health -= damage;
+        }
+        else
+        {
+            healthAdjustment = (float)damage / p2MaxHealth;
+            p2Health -= damage;
+        }
 
-        UIManager.AdjustPlayerHealth(playerID, healthAdjustment);
+        UIManager.AdjustPlayerHealth(targetID, healthAdjustment);
     }
 }
