@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardAnimManager : MonoBehaviour
 {
-    private const string disappearAnim = "Disappear";
-    private const string appearAnim = "Appear";
-
     [Header("Hover vars")]
     [SerializeField] private float magnitude;
     [SerializeField] private float frequency;
@@ -65,6 +60,7 @@ public class BoardAnimManager : MonoBehaviour
         }
     }
 
+    //make board fly away off the screen
     private void PlayDisappearAnim()
     {
         canPlayIdle = false;
@@ -73,6 +69,7 @@ public class BoardAnimManager : MonoBehaviour
         targetPos = endYPos;
     }
 
+    //make board fly up onto the screen from the bottom
     private void PlayAppearAnim()
     {
         appear = true;

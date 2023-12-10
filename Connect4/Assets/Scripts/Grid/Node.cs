@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -120,6 +119,7 @@ public class Node : MonoBehaviour
         multiplierText.enabled = false;
     }
 
+    //sets if the node is occupied by a coin and changes the multiplier text color to black for readability
     public void SetOccupied(bool value)
     {
         occupied = value;
@@ -130,13 +130,8 @@ public class Node : MonoBehaviour
             multiplierText.color = Color.white;
     }
 
-    public void PlayParticles()
+    public void StartParticles()
     {
         particles.Play();
-    }
-
-    public void StopParticles()
-    {
-        particles.Stop();
     }
 }

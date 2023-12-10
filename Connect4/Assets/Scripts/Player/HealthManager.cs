@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class HealthManager : MonoBehaviour
 {
@@ -32,6 +28,7 @@ public class HealthManager : MonoBehaviour
     public void ApplyDamage(int targetID, int score)
     {
         float healthAdjustment;
+        float startHealth;
 
         //convert score to actual damage
         int damage = Mathf.RoundToInt(score / scoreToDamageConversion);
@@ -39,15 +36,17 @@ public class HealthManager : MonoBehaviour
         //apply damage to health and convert it to a percentage of the max health to adjust the healthbar UI
         if (targetID == TurnManager.player1)
         {
+            startHealth = p1Health / p1MaxHealth;
             healthAdjustment = (float)damage / p1MaxHealth;
             p1Health -= damage;
         }
         else
         {
+            startHealth = p2Health / p2MaxHealth;
             healthAdjustment = (float)damage / p2MaxHealth;
             p2Health -= damage;
         }
 
-        UIManager.AdjustPlayerHealth(targetID, healthAdjustment);
+        UIManager.AdjustPlayerHealth(targetID, startHealth, startHealth - healthAdjustment);
     }
 }

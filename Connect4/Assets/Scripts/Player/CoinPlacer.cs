@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CoinPlacer : MonoBehaviour
@@ -12,6 +11,7 @@ public class CoinPlacer : MonoBehaviour
 
     [Header("External Components")]
     [SerializeField] private GameManagerScript gameManager;
+    [SerializeField] private ScreenShake shake;
     [SerializeField] private LayerMask layerMask;
 
     //Coin variables
@@ -58,15 +58,23 @@ public class CoinPlacer : MonoBehaviour
         Node availableNode = grid.GetLowestAvailableNode(columnPosition);
 
         //if column is full, return
-        if (availableNode == null) return;
+        if (availableNode == null || coinScript == null) return;
 
+        coinScript.shake = shake;
         coinScript.DropCoin(availableNode.transform.localPosition);
 
         availableNode.SetOccupied(true);
         availableNode.ownerID = TurnManager.playerID;
-        
-        gameManager.CheckConnect4(availableNode, TurnManager.playerID, coinScript.animationLength);
+
+        StartCoroutine(WaitForCoinDrop(coinScript.animationLength, availableNode));
         
         coinScript = null;
+    }
+    
+    //wait for coin to reach target position before checking for a connect4
+    private IEnumerator WaitForCoinDrop(float time, Node node)
+    {
+        yield return new WaitForSeconds(time);
+        gameManager.CheckConnect4(node, TurnManager.playerID, time);
     }
 }

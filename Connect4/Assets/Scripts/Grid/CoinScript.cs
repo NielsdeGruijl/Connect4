@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CoinScript : MonoBehaviour
 {
     [SerializeField] private AnimationCurve curve;
+    public ScreenShake shake;
     private Vector3 startPos;
     private Vector3 distanceToTarget;
 
@@ -29,5 +28,6 @@ public class CoinScript : MonoBehaviour
             transform.localPosition = startPos + distanceToTarget * curve.Evaluate(timeElapsed);
         }
         transform.localPosition = targetPos;
+        shake.StartShake(1, 1);
     }
 }

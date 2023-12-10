@@ -5159,7 +5159,7 @@ GameObject:
   - component: {fileID: 84885503}
   - component: {fileID: 84885502}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5182,8 +5182,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 320}
-  m_SizeDelta: {x: 800, y: 200}
+  m_AnchoredPosition: {x: 0, y: 400}
+  m_SizeDelta: {x: 1600, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &84885502
 MonoBehaviour:
@@ -5205,7 +5205,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: dogshit
+  m_text: Galactic connection
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
@@ -7046,6 +7046,7 @@ GameObject:
   - component: {fileID: 982810728}
   - component: {fileID: 982810726}
   - component: {fileID: 982810729}
+  - component: {fileID: 982810730}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -7164,6 +7165,23 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_ApplyBeforeBody: 0
+--- !u!114 &982810730
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982810724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  m_PivotOffset: {x: 0, y: 0, z: 0}
+  m_AmplitudeGain: 0
+  m_FrequencyGain: 0
+  mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!4 &998084871 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 939689040192208496, guid: 25bcaed2b2a9217479a09048f9695633,
@@ -7206,6 +7224,7 @@ MonoBehaviour:
   coin2: {fileID: 7314090720065535767, guid: 383ec7d4484fa5c4d893a5bcc981b02c, type: 3}
   coinParent: {fileID: 1094085751}
   gameManager: {fileID: 1604198771}
+  shake: {fileID: 1149219766}
   layerMask:
     serializedVersion: 2
     m_Bits: 23
@@ -7236,7 +7255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0deb6bd7249214847801b5f86c7781ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraController: {fileID: 1701492646}
   inputLocked: 0
 --- !u!114 &1015716553
 MonoBehaviour:
@@ -7369,6 +7387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1149219764}
   - component: {fileID: 1149219765}
+  - component: {fileID: 1149219766}
   m_Layer: 0
   m_Name: GameCam
   m_TagString: Untagged
@@ -7431,6 +7450,43 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 982810725}
+--- !u!114 &1149219766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149219763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 127300902637b3f409b8dcb6efb96fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.9990573
+      inSlope: 0.124277174
+      outSlope: 0.124277174
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.1951033
+    - serializedVersion: 3
+      time: 1.0016587
+      value: 0.0012194612
+      inSlope: -1.4747167
+      outSlope: -1.4747167
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.098814264
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  cam: {fileID: 1149219765}
 --- !u!1001 &1169755639
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8838,7 +8894,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1701492645}
-  - component: {fileID: 1701492646}
   m_Layer: 0
   m_Name: CameraAnchor
   m_TagString: Untagged
@@ -8862,53 +8917,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1701492646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1701492644}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20914c2b21313d0408732b06273d4883, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  vCam: {fileID: 1149219765}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.0014519691
-      inSlope: 0.13953216
-      outSlope: 0.13953216
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.2110823
-    - serializedVersion: 3
-      time: 0.8412198
-      value: 1.0222223
-      inSlope: 0.007242715
-      outSlope: 0.007242715
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.47466037
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.018111868
-      outSlope: 0.018111868
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.9213386
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  gameManager: {fileID: 0}
 --- !u!1 &1732206613
 GameObject:
   m_ObjectHideFlags: 0

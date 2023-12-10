@@ -1,9 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -39,7 +35,6 @@ public class TurnManager : MonoBehaviour
         {
             turnTimeElapsed -= Time.deltaTime;
             uiManager.timerText.text = Mathf.CeilToInt(turnTimeElapsed).ToString();
-            //Debug.Log($"{playerID}, {turnTimeElapsed}");
         }
         else
             ChangeTurns();

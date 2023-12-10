@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.VisualScripting.Member;
 
 public class UIManager : MonoBehaviour
 {
@@ -56,34 +53,32 @@ public class UIManager : MonoBehaviour
     }
     
     //Set the correct target for the "losing health" animation
-    public void AdjustPlayerHealth(int playerID, float adjustment)
+    public void AdjustPlayerHealth(int playerID, float currentHealth, float targetHealth)
     {
         if(playerID == TurnManager.player1)
-            StartCoroutine(AnimateHealthLost(p1Health, adjustment));
+            StartCoroutine(AnimateHealthLost(p1Health, currentHealth, targetHealth));
         else
-            StartCoroutine(AnimateHealthLost(p2Health, adjustment));
+            StartCoroutine(AnimateHealthLost(p2Health, currentHealth, targetHealth));
     }
 
     //Animate healthbar "smoothly" losing health
-    private IEnumerator AnimateHealthLost(Slider playerHealth, float adjustment)
+    private IEnumerator AnimateHealthLost(Slider playerHealth, float currentHealth, float targetHealth)
     {
-        float health = playerHealth.value;
-        float newHealth = health - adjustment;
-
-        while (health - newHealth >= 0.01)
+        while (Mathf.Abs(currentHealth - targetHealth) >= 0.01)
         {
             yield return null;
-            health = Mathf.Lerp(health, newHealth, 0.1f);
-            playerHealth.value = Mathf.Clamp(health, 0, 1);
+            currentHealth = Mathf.Lerp(currentHealth, targetHealth, 0.01f);
+            playerHealth.value = Mathf.Clamp(currentHealth, 0, 1);
         }
-        playerHealth.value = Mathf.Clamp(newHealth, 0, 1);
+        playerHealth.value = Mathf.Clamp(targetHealth, 0, 1);
 
         yield return new WaitForSeconds(0.1f);
 
-        if (playerHealth.value > 0)
-            gameManager.ResetBoard(); // =========================== CONSIDER FIXING THIS ==========================================
+        //either start a new round or end the match
+        if (targetHealth > 0)
+            gameManager.ResetBoard();
         else
-            gameManager.EndGame();
+            StartCoroutine(DisplayWinUI());
     }
 
     private void ResetHealthUI()
@@ -92,10 +87,13 @@ public class UIManager : MonoBehaviour
         p2Health.value = 1;
     }
 
-    public void DisplayWinUI()
+    public IEnumerator DisplayWinUI()
     {
         winText.text = $"Player {TurnManager.playerID + 1} wins!";
         winText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        winText.gameObject.SetActive(false);
+        gameManager.EndGame();
     }
 
     //Swap between main menu and game HUD

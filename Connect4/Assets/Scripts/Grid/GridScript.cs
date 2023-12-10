@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.UIElements;
 
 public class GridScript : MonoBehaviour
 {
@@ -15,7 +12,7 @@ public class GridScript : MonoBehaviour
     [SerializeField] private Vector2Int cellSize;
     [SerializeField] public int rowLength;
     [SerializeField] public int colLength;
-    private int gridWidth, gridHeight;
+    private int gridWidth;
     public Vector2Int GridSize { get; private set; }
 
     [Header("Multipliers")]
@@ -34,7 +31,6 @@ public class GridScript : MonoBehaviour
 
         //the row and column at position 0 shouldn't be accounted for in the "grid size"
         gridWidth = (rowLength - 1) * cellSize.x;
-        gridHeight = (colLength - 1) * cellSize.y;
 
         GenerateGrid();
     }

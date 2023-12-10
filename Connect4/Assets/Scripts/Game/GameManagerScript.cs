@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -61,7 +59,7 @@ public class GameManagerScript : MonoBehaviour
 
         foreach(Node node in connectedNodes)
         {
-            node.PlayParticles();
+            node.StartParticles();
         }
 
         //set the UI animations in motion and stop the turn manager

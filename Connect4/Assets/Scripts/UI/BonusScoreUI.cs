@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -40,7 +38,6 @@ public class BonusScoreUI : MonoBehaviour
 
     public void ResetPosition()
     {
-        Debug.Log("Bonus: " + startPos);
         transform.localPosition = startPos;
     }
     
